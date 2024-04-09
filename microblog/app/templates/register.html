@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block content %}
+<h1>Register</h1>
+<form action="" method="post">
+  <!-- CSRF Token -->
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+  <p>
+    <label for="username">Username:</label><br />
+    <input type="text" id="username" name="username" size="32" required /><br />
+  </p>
+
+  <p>
+    <label for="email">Email:</label><br />
+    <input type="email" id="email" name="email" size="64" required /><br />
+  </p>
+
+  <p>
+    <label for="password">Password:</label><br />
+    <input
+      type="password"
+      id="password"
+      name="password"
+      size="32"
+      required
+    /><br />
+    {% if password_error %}
+    <span style="color: red">[{{ password_error }}]</span>
+    {% endif %}
+  </p>
+
+  <p>
+    <label for="password2">Confirm Password:</label><br />
+    <input
+      type="password"
+      id="password2"
+      name="password2"
+      size="32"
+      required
+    /><br />
+    {% if password2_error %}
+    <span style="color: red">[{{ password2_error }}]</span>
+    {% endif %}
+  </p>
+
+  <p>
+    <input type="submit" value="Register" />
+  </p>
+</form>
+{% endblock %}
