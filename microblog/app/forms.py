@@ -5,11 +5,6 @@ import sqlalchemy as sa
 from app import db
 from wtforms.validators import Length
 from app.model import User
-class LoginForm(FlaskForm):
-    username = StringField('使用者名', validators=[DataRequired(message="用戶名不可空白或超過32字")])
-    password = PasswordField('密碼', validators=[DataRequired(message="密碼不可空白"), Length(min=3, max=32, message="密碼長度應為6到32個字符")])
-    remember_me = BooleanField('記住我')
-    submit = SubmitField('登入')
     
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
