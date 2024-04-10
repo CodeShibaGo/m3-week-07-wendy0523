@@ -114,3 +114,46 @@ $.ajax({
 ```
 
 [ajaxsetup](https://www.jquery123.com/jQuery.ajaxSetup/)
+
+## 學會 VS Code + VirtualEnv 組合技
+
+### VirtualEnv 環境設置
+
+- 安裝
+  ```pip3 install virtualenv
+
+  ```
+- 建立虛擬環境跟檔案名稱命名
+  ```virtualenv '檔案名稱'
+
+  ```
+- 啟動虛擬環境
+  ```source venv/bin/activate
+
+  ```
+- 停用虛擬環境
+  ```deactivate
+
+  ```
+
+### 調教 VS Code 讓 VirtualEnv 環境更好用
+
+- 打開命令面板 Cmd+Shift+P
+- 輸入 “Python: Select Interpreter”
+- 選擇剛創建的 .venv 虛擬環境
+
+### 如何測試環境使否有載入成功
+
+```which python
+
+```
+
+```/Users/huangyalin/Documents/code/m3-week-07-wendy0523/.venv/bin/python
+
+```
+
+### 如何判斷套件是否安裝成功
+
+```flask run
+
+```
