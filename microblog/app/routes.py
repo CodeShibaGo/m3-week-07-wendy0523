@@ -1,12 +1,12 @@
 from flask import render_template, flash, redirect, url_for,request
 from flask_login import login_user, logout_user, current_user, login_required
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 from urllib.parse import urlsplit
 from app import app,db
 import sqlalchemy as sa
 from datetime import datetime, timezone
-from app.forms import EditProfileForm,EmptyForm
-from app.model import User
+from app.forms import EditProfileForm,EmptyForm,PostForm
+from app.model import User,Post
 import mysql.connector
 
 # 連接 MySQL 資料庫
@@ -15,7 +15,8 @@ conn = mysql.connector.connect(
     user='root',  # 資料庫使用者名稱
     password='112024112024',  # 資料庫密碼
     database='db_micrblog', # 資料庫名稱
-    port=3306
+    port=3306,
+    auth_plugin='mysql_native_password'
 )
 cursor = conn.cursor()
 
@@ -27,28 +28,30 @@ def before_request():
         current_user.last_seen = datetime.now(timezone.utc)
         db.session.commit()
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 
+#避免用戶不小心多次提交表單的問題。
 def index():
-    user = {'username': 'Wendy'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Portland 的天氣真好！'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': '復仇者聯盟電影真的很酷！'
-        },
-        {
-            'author': {'username': 'John'},
-            'body': '沙丘2很好看！'
-        }
-
-    ]
-    return render_template('index.html', title='首頁',posts=posts)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('你的貼文現在已發布！')
+        return redirect(url_for('index')) 
+       
+    page = request.args.get('page', 1, type=int)
+    posts = db.paginate(current_user.following_posts(), page=page,
+                        per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html', title='Home', form=form,
+                           posts=posts.items, next_url=next_url,
+                           prev_url=prev_url)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -175,3 +178,46 @@ def unfollow(username):
         return redirect(url_for('user', username=username))
     else:
         return redirect(url_for('index'))
+    
+# @app.route('/explore')
+# @login_required
+# def explore():
+#     page = request.args.get('page', 1, type=int)
+#     per_page = app.config['POSTS_PER_PAGE']
+    
+#     # 計算 OFFSET 和 LIMIT
+#     offset = (page - 1) * per_page
+    
+#     query = sa.text("""
+#         SELECT * FROM post
+#         ORDER BY timestamp DESC
+#         LIMIT :limit OFFSET :offset
+#     """)
+    
+#     posts = db.session.scalars(
+#         query.bindparams(limit=per_page, offset=offset)
+#     ).all()
+    
+#     # 獲取 post 總數
+#     posts_count = db.session.scalar(sa.text("SELECT COUNT(*) FROM post"))
+    
+#     # 計算下一頁和上一頁的 URL
+#     next_url = url_for('explore', page=page + 1) if (page * per_page) < posts_count else None
+#     prev_url = url_for('explore', page=page - 1) if page > 1 else None
+    
+#     return render_template("index.html", title='Explore', posts=posts,
+#                            next_url=next_url, prev_url=prev_url)
+    
+@app.route('/explore')
+@login_required
+def explore():
+    page = request.args.get('page', 1, type=int)
+    query = sa.select(Post).order_by(Post.timestamp.desc())
+    posts = db.paginate(query, page=page,
+                        per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    next_url = url_for('explore', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template("index.html", title='Explore', posts=posts.items,
+                           next_url=next_url, prev_url=prev_url)

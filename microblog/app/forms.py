@@ -42,5 +42,12 @@ class EditProfileForm(FlaskForm):
                 User.username == self.username.data))
             if user is not None:
                 raise ValidationError('Please use a different username.')
+
 class EmptyForm(FlaskForm):
+    submit = SubmitField('提交')
+
+#提交新貼文表單
+class PostForm(FlaskForm):
+    post = TextAreaField('說點什麼', validators=[
+        DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('提交')
