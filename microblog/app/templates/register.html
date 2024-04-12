@@ -1,49 +1,85 @@
 {% extends "base.html" %} {% block content %}
-<h1>Register</h1>
-<form action="" method="post">
-  <!-- CSRF Token -->
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+<div class="container d-flex justify-content-center">
+  <div class="card text-center">
+    <div class="card-body" style="background-color: hsl(206, 89%, 93%);">
+      <h1 class="mb-4">歡迎註冊</h1>
+      <form action="" method="post">
+        <!-- CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="username">Username:</label>
+          </div>
+          <div class="col-8">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              size="32"
+              required
+              class="form-control"
+              style="border-color: #282c57"
+            />
+            {% if username_error %}
+            <div class="text-danger mt-2">[{{ username_error }}]</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="email">Email:</label>
+          </div>
+          <div class="col-8">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              size="64"
+              required
+              class="form-control"
+              style="border-color: #282c57"
+            />
+          </div>
+        </div>
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="password"
+              >Password:
+          </div>
+          <div class="col-8">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              style="border-color: #282c57"
+            />
+            {% if password_error %}
+            <span style="color: red">[{{ password_error }}]</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="password2"
+              >Confirm Password:
+          </div>
+          <div class="col-8">
+            <input
+              type="password"
+              id="password2"
+              name="password2"
+              class="form-control"
+              style="border-color: #282c57"
+            />
+            {% if password_error %}
+            <span style="color: red">[{{ password_error }}]</span>
+            {% endif %}
+          </div>
+        </div>
 
-  <p>
-    <label for="username">Username:</label><br />
-    <input type="text" id="username" name="username" size="32" required /><br />
-  </p>
-
-  <p>
-    <label for="email">Email:</label><br />
-    <input type="email" id="email" name="email" size="64" required /><br />
-  </p>
-
-  <p>
-    <label for="password">Password:</label><br />
-    <input
-      type="password"
-      id="password"
-      name="password"
-      size="32"
-      required
-    /><br />
-    {% if password_error %}
-    <span style="color: red">[{{ password_error }}]</span>
-    {% endif %}
-  </p>
-
-  <p>
-    <label for="password2">Confirm Password:</label><br />
-    <input
-      type="password"
-      id="password2"
-      name="password2"
-      size="32"
-      required
-    /><br />
-    {% if password2_error %}
-    <span style="color: red">[{{ password2_error }}]</span>
-    {% endif %}
-  </p>
-
-  <p>
-    <input type="submit" value="Register" />
-  </p>
-</form>
+        <input class="btn btn-primary mb-3" type="submit" value="註冊" />
+      </form>
+  </div>
+</div>
 {% endblock %}

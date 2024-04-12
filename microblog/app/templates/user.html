@@ -27,4 +27,19 @@
   </tr>
 </table>
 <hr />
-{% for post in posts %} {% include '_post.html' %} {% endfor %} {% endblock %}
+{% for post in posts %} {% include '_post.html' %} {% endfor %} 
+<nav aria-label="帖子導航">
+  <ul class="pagination">
+    <li class="page-item{% if not prev_url %} disabled{% endif %}">
+      <a class="page-link" href="{{ prev_url}}">
+        <span aria-hidden="true">&larr;</span> 較新的帖子
+      </a>
+    </li>
+    <li class="page-item{% if not next_url %} disabled{% endif %}">
+      <a class="page-link" href="{{ next_url}}">
+        較舊的帖子 <span aria-hidden="true">&rarr;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endblock %}
