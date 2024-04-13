@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block content %}
+<div class="container d-flex justify-content-center">
+  <div class="card text-center">
+    <div class="card-body" style="background-color: hsl(206, 89%, 93%);">
+      <h1 class="mb-4">歡迎登入</h1>
+      <form action="" method="post">
+        <!-- CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="username">Username:</label>
+          </div>
+          <div class="col-8">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              size="32"
+              required
+              class="form-control"
+              style="border-color: #282c57"
+            />
+            {% if username_error %}
+            <div class="text-danger mt-2">[{{ username_error }}]</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row no-gutters mb-4">
+          <div class="col-4 text-end">
+            <label for="password"
+              >Password:
+          </div>
+          <div class="col-8">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              style="border-color: #282c57"
+            />
+            {% if password_error %}
+            <span style="color: red">[{{ password_error }}]</span>
+            {% endif %}
+          </div>
+        </div>
+        <input class="btn btn-primary mb-3" type="submit" value="Loin In" />
+        </p>
+      </form>
+      <p>
+        忘記你的密碼了嗎？
+        <a href="{{ url_for('reset_password_request') }}"> 點擊這裡重設 </a>
+      </p>
+      <p>新使用者？ <a href="{{ url_for('register') }}"> 點擊註冊！</a></p>
+      {% endblock %}
+    </div>
+  </div>
+</div>
